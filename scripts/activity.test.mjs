@@ -1,6 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseGithubCalendar, countByDay, merge, trim, findRepos } from './activity.mjs';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { parseGithubCalendar, countByDay, merge, trim, findRepos, commitLines } from './activity.mjs';
 
 // Shapes copied from github.com/users/<u>/contributions (Sep 2026).
 const cell = (i, date) =>
@@ -42,4 +46,26 @@ test('parseGithubCalendar throws on an unrecognised tooltip instead of storing 0
 
 test('findRepos throws when a scan root is unreadable instead of returning no repos', () => {
   assert.throws(() => findRepos('/definitely/not/a/real/root'), /ENOENT/);
+});
+
+test('commitLines ignores stash commits and buckets days in Istanbul time whatever the machine zone', () => {
+  const repo = mkdtempSync(join(tmpdir(), 'activity-'));
+  const sh = (...args) => execFileSync('git', ['-C', repo, '-c', 'user.name=t', '-c', 'user.email=avazedu@gmail.com', ...args], { env: { ...process.env, GIT_AUTHOR_DATE: when, GIT_COMMITTER_DATE: when } });
+  // yesterday 22:30 UTC is already the next day in Istanbul (UTC+3)
+  const d = new Date(Date.now() - 86400000); d.setUTCHours(22, 30, 0, 0);
+  const when = d.toISOString();
+  const istanbulDay = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(d);
+  sh('init', '-q');
+  writeFileSync(join(repo, 'a.txt'), '1');
+  sh('add', '.'); sh('commit', '-q', '-m', 'one');
+  writeFileSync(join(repo, 'a.txt'), '2');
+  sh('stash', '-q');
+  const zone = process.env.TZ;
+  process.env.TZ = 'America/New_York';
+  try {
+    assert.deepEqual(countByDay(commitLines(repo)), { [istanbulDay]: 1 });
+  } finally {
+    process.env.TZ = zone;
+    rmSync(repo, { recursive: true, force: true });
+  }
 });

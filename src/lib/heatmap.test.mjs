@@ -32,3 +32,9 @@ test('month labels: cramped first label dropped, last is current month', () => {
   assert.deepEqual(months[0], { col: 1, label: 'Apr' });
   assert.equal(months.at(-1).label, 'Sep');
 });
+
+test('month labels: a new month starting in the last columns is dropped instead of clipped', () => {
+  const { weeks, months } = buildGrid({}, '2026-10-04'); // Oct starts in the last column
+  assert.ok(weeks.length - months.at(-1).col >= 3);
+  assert.equal(months.at(-1).label, 'Sep');
+});

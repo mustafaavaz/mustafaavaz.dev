@@ -73,16 +73,22 @@ export function findRepos(dir, depth = 0, out = []) {
   return out;
 }
 
-const git = (repo, ...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 64 << 20 });
+// TZ pinned so commit days match the Istanbul 'today' used for the window.
+const git = (repo, ...args) => execFileSync('git', ['-C', repo, ...args],
+  { encoding: 'utf8', maxBuffer: 64 << 20, env: { ...process.env, TZ: 'Europe/Istanbul' } });
+
+export function commitLines(repo) {
+  // branches/remotes/tags only: --all would also count stash and refs/original commits
+  return git(repo, 'log', '--branches', '--remotes', '--tags', `--since=${WINDOW_DAYS} days ago`, '--format=%H %ad',
+    '--date=format-local:%Y-%m-%d', ...EMAILS.map((e) => `--author=${e}`)).split('\n');
+}
 
 function localLines() {
   const lines = [];
   for (const repo of ROOTS.flatMap((root) => findRepos(root))) {
     try {
       if (git(repo, 'remote', '-v').includes('github.com')) continue; // already on GitHub's calendar
-      const log = git(repo, 'log', '--all', `--since=${WINDOW_DAYS} days ago`, '--format=%H %ad',
-        '--date=format-local:%Y-%m-%d', ...EMAILS.map((e) => `--author=${e}`));
-      lines.push(...log.split('\n'));
+      lines.push(...commitLines(repo));
     } catch (err) {
       console.warn(`skip ${repo}: ${err.message.split('\n')[0]}`);
     }

@@ -30,6 +30,7 @@ export function buildGrid(days, today) {
     }
   });
   if (months.length > 1 && months[1].col - months[0].col < 3) months.shift();
+  if (months.length > 1 && weeks.length - months.at(-1).col < 3) months.pop();
 
   return { weeks, months, total: all.reduce((sum, d) => sum + d.count, 0) };
 }
