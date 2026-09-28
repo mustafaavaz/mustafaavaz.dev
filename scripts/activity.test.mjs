@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseGithubCalendar, countByDay, merge, trim } from './activity.mjs';
+import { parseGithubCalendar, countByDay, merge, trim, findRepos } from './activity.mjs';
 
 // Shapes copied from github.com/users/<u>/contributions (Sep 2026).
 const cell = (i, date) =>
@@ -33,4 +33,13 @@ test('merge adds counts per day', () => {
 test('trim keeps the window ending today, drops zeros, sorts', () => {
   const days = { '2026-09-29': 9, '2026-09-28': 3, '2026-09-27': 0, '2026-09-26': 2, '2026-09-25': 1 };
   assert.deepEqual(Object.entries(trim(days, '2026-09-28', 3)), [['2026-09-26', 2], ['2026-09-28', 3]]);
+});
+
+test('parseGithubCalendar throws on an unrecognised tooltip instead of storing 0', () => {
+  const html = cell(0, '2026-09-28') + tip(0, '5 commits on September 28th.');
+  assert.throws(() => parseGithubCalendar(html), /unrecognised tooltip/);
+});
+
+test('findRepos throws when a scan root is unreadable instead of returning no repos', () => {
+  assert.throws(() => findRepos('/definitely/not/a/real/root'), /ENOENT/);
 });

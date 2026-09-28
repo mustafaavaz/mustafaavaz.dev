@@ -23,6 +23,7 @@ export function parseGithubCalendar(html) {
   for (const [, id, text] of html.matchAll(/<tool-tip\b[^>]*\bfor="([^"]+)"[^>]*>([^<]*)<\/tool-tip>/g)) {
     if (!dateById[id]) continue;
     const n = text.match(/^([\d,]+) contributions?/);
+    if (!n && !/^No contributions/.test(text)) throw new Error(`GitHub calendar: unrecognised tooltip "${text}"`);
     days[dateById[id]] = n ? Number(n[1].replaceAll(',', '')) : 0;
   }
   if (Object.keys(days).length === 0) throw new Error('GitHub calendar: no days parsed (markup changed?)');
@@ -56,11 +57,16 @@ export function trim(days, today, windowDays = WINDOW_DAYS) {
   );
 }
 
-function findRepos(dir, depth = 0, out = []) {
+export function findRepos(dir, depth = 0, out = []) {
   if (existsSync(join(dir, '.git'))) return out.push(dir), out;
   if (depth >= MAX_DEPTH) return out;
   let entries;
-  try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return out; }
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (err) {
+    if (depth === 0) throw err; // an unreadable root would silently drop all local activity
+    return out;
+  }
   for (const e of entries) {
     if (e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules') findRepos(join(dir, e.name), depth + 1, out);
   }
