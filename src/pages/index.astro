@@ -22,11 +22,25 @@ const writing: Row[] = (await getPosts()).map((p) => ({
 }));
 
 const hasCv = existsSync('public/cv.pdf');
+
+// Person structured data: tells search engines this page is Mustafa Avaz's.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: `${site.url}/`,
+  image: `${site.url}/me.jpg`,
+  jobTitle: 'Software Engineer',
+  description: site.description,
+  address: { '@type': 'PostalAddress', addressLocality: 'Istanbul', addressCountry: 'TR' },
+  sameAs: [site.github, site.linkedin].filter(Boolean),
+};
 ---
-<Base>
+<Base title={`${site.name} — Software Engineer`}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(person)} />
   <header class="top">
     <span class="avatar">
-      <img src="/me.jpg" alt="" width="44" height="44" />
+      <img src="/me.jpg" alt={site.name} width="44" height="44" />
       <span class="dot" aria-hidden="true"></span>
     </span>
     <div>
@@ -39,7 +53,7 @@ const hasCv = existsSync('public/cv.pdf');
   <p>Currently an intern at <b>Fex</b>, where I've built a <b>RAG</b> system over code and docs and worked on a <b>matching engine</b>.</p>
 
   <p>
-    Find me on <a class="chip" href={site.github}>GitHub</a>{site.linkedin && <>, <a class="chip" href={site.linkedin}>LinkedIn</a></>}
+    Find me on <a class="chip" rel="me" href={site.github}>GitHub</a>{site.linkedin && <>, <a class="chip" rel="me" href={site.linkedin}>LinkedIn</a></>}
     {hasCv && <> · <a class="chip" href="/cv.pdf">CV ↓</a></>}
   </p>
   <p class="copy-hint">Press <button class="kbd" type="button" data-copy-email aria-label="Copy email address">C</button> to copy my email</p>
