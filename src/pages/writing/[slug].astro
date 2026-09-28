@@ -14,16 +14,22 @@ const { Content } = await render(post);
 const date = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 <Base title={`${post.data.title} — ${site.name}`} description={post.data.description}>
-  <a class="back" href="/">← {site.name}</a>
+  <a class="back" href="/" data-home>← {site.name}</a>
   <article>
     <h1>{post.data.title}</h1>
     <p class="meta">{date} · {readingTime(post.body)} min read</p>
     <div class="prose"><Content /></div>
   </article>
   <nav class="end">
-    <a href="/">← Back home</a>
+    <a href="/" data-home>← Back home</a>
     <span class="copy-hint">Press <button class="kbd" type="button" data-copy-email aria-label="Copy email address">C</button> to copy my email</span>
   </nav>
+  <script is:inline>
+    // Send "home" back to the Turkish page when the reader came from it.
+    if (document.referrer.startsWith(location.origin + '/tr/')) {
+      document.querySelectorAll('[data-home]').forEach((a) => a.setAttribute('href', '/tr/'));
+    }
+  </script>
 </Base>
 
 <style>

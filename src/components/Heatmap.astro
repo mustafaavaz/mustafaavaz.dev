@@ -2,22 +2,35 @@
 import activity from '../data/activity.json';
 import { buildGrid } from '../lib/heatmap.mjs';
 
-const { weeks, months, total } = buildGrid(activity.days, activity.generatedAt);
+interface Props { lang?: 'en' | 'tr' }
+const { lang = 'en' } = Astro.props;
+const locale = lang === 'tr' ? 'tr-TR' : 'en-GB';
+const { weeks, months, total } = buildGrid(activity.days, activity.generatedAt, locale);
 const fmt = (date: string) =>
-  new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-const plural = (n: number) => `${n === 0 ? 'No' : n.toLocaleString('en-US')} contribution${n === 1 ? '' : 's'}`;
+  new Date(`${date}T00:00:00Z`).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const t = lang === 'tr'
+  ? {
+      day: (n: number, d: string) => `${fmt(d)}: ${n === 0 ? 'katkı yok' : `${n} katkı`}`,
+      total: (n: number) => `Son 6 ayda ${n.toLocaleString('tr-TR')} katkı`,
+      less: 'Az', more: 'Çok',
+    }
+  : {
+      day: (n: number, d: string) => `${n === 0 ? 'No' : n} contribution${n === 1 ? '' : 's'} on ${fmt(d)}`,
+      total: (n: number) => `${n === 0 ? 'No' : n.toLocaleString('en-US')} contribution${n === 1 ? '' : 's'} in the last 6 months`,
+      less: 'Less', more: 'More',
+    };
 ---
 <div class="scroll" dir="rtl">
-  <div class="heat" dir="ltr" role="img" aria-label={`${plural(total)} in the last 6 months`} style={`--weeks: ${weeks.length}`}>
+  <div class="heat" dir="ltr" role="img" aria-label={t.total(total)} style={`--weeks: ${weeks.length}`}>
     <div class="months">
       {months.map((m) => <span style={`grid-column: ${m.col + 1}`}>{m.label}</span>)}
     </div>
     <div class="cells">
-      {weeks.flat().map((d) => <i class={`l${d.level}`} title={`${plural(d.count)} on ${fmt(d.date)}`}></i>)}
+      {weeks.flat().map((d) => <i class={`l${d.level}`} title={t.day(d.count, d.date)}></i>)}
     </div>
     <div class="foot">
-      <span>{plural(total)} in the last 6 months</span>
-      <span class="legend">Less <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> More</span>
+      <span>{t.total(total)}</span>
+      <span class="legend">{t.less} <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> {t.more}</span>
     </div>
   </div>
 </div>

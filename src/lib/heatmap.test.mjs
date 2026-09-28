@@ -38,3 +38,8 @@ test('month labels: a new month starting in the last columns is dropped instead 
   assert.ok(weeks.length - months.at(-1).col >= 3);
   assert.equal(months.at(-1).label, 'Sep');
 });
+
+test('month labels follow the requested locale', () => {
+  const { months } = buildGrid({}, '2026-09-28', 'tr-TR');
+  assert.deepEqual(months.map((m) => m.label), ['Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl']);
+});

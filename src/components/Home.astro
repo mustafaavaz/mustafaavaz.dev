@@ -1,0 +1,130 @@
+---
+import { existsSync } from 'node:fs';
+import Base from '../layouts/Base.astro';
+import ListSection from './ListSection.astro';
+import Heatmap from './Heatmap.astro';
+import { getPosts } from '../lib/posts';
+import { site } from '../site.mjs';
+
+interface Props { lang: 'en' | 'tr' }
+const { lang } = Astro.props;
+
+type Row = { year: string; title: string; href?: string; date: string };
+
+// Bio paragraphs are trusted, hand-written HTML (only <b> tags).
+const t = {
+  en: {
+    title: `${site.name} — Software Engineer`,
+    description: site.description,
+    updated: 'Updated',
+    bio: [
+      "I'm a <b>software engineer</b> from Istanbul building <b>backend and AI systems for crypto and fintech</b>.",
+      'Currently an intern at <b>Fexobit</b>, where I work on <b>trading engines</b> and <b>price oracles</b>, and build <b>AI systems</b> and <b>agentic tools</b> alongside them.',
+    ],
+    find: 'Find me on',
+    and: ',',
+    press: ['Press', 'to copy my email'],
+    copyLabel: 'Copy email address',
+    sections: { experience: 'Experience', projects: 'Projects', writing: 'Writing', activity: 'Activity' },
+    experience: [
+      { year: '2026', title: 'Fexobit — Software Engineering Intern', date: 'Jun –' },
+      { year: '2025', title: 'ForInvest — Backend Developer Intern', date: 'Feb – Jun' },
+    ],
+    jobTitle: 'Software Engineer',
+  },
+  tr: {
+    title: `${site.name} — Yazılım Mühendisi`,
+    description: "İstanbul'da kripto ve fintech alanında backend ve yapay zekâ sistemleri geliştiren yazılım mühendisi. Şu anda Fexobit'te.",
+    updated: 'Güncellendi:',
+    bio: [
+      "Merhaba, ben <b>Mustafa</b>. İstanbul'da <b>kripto ve fintech</b> alanında <b>backend ve yapay zekâ sistemleri</b> geliştiren bir <b>yazılım mühendisiyim</b>.",
+      "Şu anda <b>Fexobit</b>'te stajyerim. <b>Trading engine</b>'ler ve <b>price oracle</b>'lar üzerinde çalışıyor, bunların yanında <b>yapay zekâ sistemleri</b> ve <b>agentic araçlar</b> geliştiriyorum.",
+    ],
+    find: 'Beni',
+    and: ' ve',
+    findEnd: "'de bulabilirsin.",
+    press: ['E-postamı kopyalamak için', "'ye bas"],
+    copyLabel: 'E-posta adresini kopyala',
+    sections: { experience: 'Deneyim', projects: 'Projeler', writing: 'Yazılar', activity: 'Aktivite' },
+    experience: [
+      { year: '2026', title: 'Fexobit — Yazılım Mühendisliği Stajyeri', date: 'Haz –' },
+      { year: '2025', title: 'ForInvest — Backend Geliştirici Stajyeri', date: 'Şub – Haz' },
+    ],
+    jobTitle: 'Yazılım Mühendisi',
+  },
+}[lang];
+
+const locale = lang === 'tr' ? 'tr-TR' : 'en-US';
+const updated = new Date(`${site.updated}-01T00:00:00Z`).toLocaleDateString(locale, { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const projects: Row[] = [];
+const writing: Row[] = (await getPosts()).map((p) => ({
+  year: String(p.data.date.getUTCFullYear()),
+  title: p.data.title,
+  href: `/writing/${p.id}/`,
+  date: p.data.date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }),
+}));
+const hasCv = existsSync('public/cv.pdf');
+const self = lang === 'tr' ? '/tr/' : '/';
+
+// Person structured data: tells search engines this page is Mustafa Avaz's.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: new URL(self, site.url).href,
+  image: `${site.url}/me.jpg`,
+  jobTitle: t.jobTitle,
+  description: t.description,
+  address: { '@type': 'PostalAddress', addressLocality: 'Istanbul', addressCountry: 'TR' },
+  sameAs: [site.github, site.linkedin].filter(Boolean),
+};
+---
+<Base title={t.title} description={t.description} lang={lang} alternates={{ en: '/', tr: '/tr/' }}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(person)} />
+  <header class="top">
+    <span class="avatar">
+      <img src="/me.jpg" alt={site.name} width="64" height="64" />
+      <span class="dot" aria-hidden="true"></span>
+    </span>
+    <div>
+      <h1>{site.name}</h1>
+      <p class="sub">{t.updated} {updated}</p>
+    </div>
+    <nav class="lang" aria-label="Language">
+      {lang === 'tr' ? <b aria-current="page">TR</b> : <a href="/tr/" hreflang="tr" lang="tr">TR</a>}
+      <span aria-hidden="true">|</span>
+      {lang === 'en' ? <b aria-current="page">EN</b> : <a href="/" hreflang="en" lang="en">EN</a>}
+    </nav>
+  </header>
+
+  {t.bio.map((html) => <p set:html={html} />)}
+
+  <p>
+    {t.find} <a class="chip" rel="me" href={site.github}>GitHub</a>{site.linkedin && <>{t.and} <a class="chip" rel="me" href={site.linkedin}>LinkedIn</a></>}{'findEnd' in t && t.findEnd}
+    {hasCv && <> · <a class="chip" href="/cv.pdf">CV ↓</a></>}
+  </p>
+  <p class="copy-hint">{t.press[0]} <button class="kbd" type="button" data-copy-email aria-label={t.copyLabel}>C</button>{t.press[1].startsWith("'") ? t.press[1] : ` ${t.press[1]}`}</p>
+
+  <ListSection title={t.sections.experience} rows={t.experience} />
+  <ListSection title={t.sections.projects} rows={projects} />
+  <ListSection title={t.sections.writing} rows={writing} />
+
+  <section class="section">
+    <h2>{t.sections.activity}</h2>
+    <Heatmap lang={lang} />
+  </section>
+</Base>
+
+<style>
+  .top { display: flex; align-items: center; gap: 14px; }
+  .avatar { position: relative; flex-shrink: 0; }
+  .avatar img { display: block; width: 64px; height: 64px; border-radius: 14px; object-fit: cover; background: var(--chip); }
+  .dot { position: absolute; right: -3px; bottom: -3px; width: 13px; height: 13px; border-radius: 50%; background: #3fb96b; border: 2px solid var(--bg); }
+  h1 { font-size: 15px; }
+  .sub { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .lang { margin-left: auto; align-self: flex-start; display: flex; gap: 6px; font-size: 13px; color: var(--faint); }
+  .lang b { color: var(--ink); font-weight: 600; }
+  .lang a { color: var(--muted); text-decoration: none; }
+  .lang a:hover { color: var(--blue); }
+  .top + p { margin-top: 20px; }
+</style>

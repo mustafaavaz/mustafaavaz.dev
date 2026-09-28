@@ -39,7 +39,7 @@ b { font-weight: 600; }
   color: var(--ink); font-family: inherit; font-size: 12px; font-weight: 500; line-height: 1; cursor: pointer;
 }
 .copy-hint { color: var(--muted); }
-.copy-hint.done::after { content: ' — copied'; color: var(--blue); }
+.copy-hint.done::after { content: ' — ' var(--copied, 'copied'); color: var(--blue); }
 
 .site-foot {
   display: flex; justify-content: space-between; margin-top: 56px; padding-bottom: 32px;

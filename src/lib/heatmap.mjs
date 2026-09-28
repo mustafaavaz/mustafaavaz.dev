@@ -12,7 +12,7 @@ export function levels(counts) {
 const WEEKS_BACK = 26; // ~6 months
 
 // WEEKS_BACK + 1 week columns (Sunday-first) ending on `today`.
-export function buildGrid(days, today) {
+export function buildGrid(days, today, locale = 'en-US') {
   const end = toTime(today);
   const start = end - (WEEKS_BACK * 7 + new Date(end).getUTCDay()) * DAY;
   const all = [];
@@ -26,7 +26,7 @@ export function buildGrid(days, today) {
   weeks.forEach((w, i) => {
     const month = w[0].date.slice(0, 7);
     if (i === 0 || month !== weeks[i - 1][0].date.slice(0, 7)) {
-      months.push({ col: i, label: new Date(toTime(w[0].date)).toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) });
+      months.push({ col: i, label: new Date(toTime(w[0].date)).toLocaleString(locale, { month: 'short', timeZone: 'UTC' }) });
     }
   });
   if (months.length > 1 && months[1].col - months[0].col < 3) months.shift();

@@ -3,12 +3,21 @@ import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { site } from '../site.mjs';
 
-interface Props { title?: string; description?: string }
-const { title = site.name, description = site.description } = Astro.props;
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: 'en' | 'tr';
+  alternates?: { en: string; tr: string }; // hreflang pair for pages that exist in both languages
+}
+const { title = site.name, description = site.description, lang = 'en', alternates } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url);
+const t = {
+  en: { where: 'in Istanbul', copied: 'copied', clock: 'en-US' },
+  tr: { where: '· İstanbul', copied: 'kopyalandı', clock: 'tr-TR' },
+}[lang];
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,15 +33,20 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL('/me.jpg', site.url)} />
     <meta name="twitter:card" content="summary" />
+    {alternates && <>
+      <link rel="alternate" hreflang="en" href={new URL(alternates.en, site.url)} />
+      <link rel="alternate" hreflang="tr" href={new URL(alternates.tr, site.url)} />
+      <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, site.url)} />
+    </>}
     <slot name="head" />
   </head>
-  <body>
+  <body style={`--copied: '${t.copied}'`}>
     <main class="col"><slot /></main>
     <footer class="col site-foot">
-      <span><span class="live" aria-hidden="true">●</span> <span data-clock></span> in Istanbul</span>
+      <span><span class="live" aria-hidden="true">●</span> <span data-clock></span> {t.where}</span>
       <span>mustafaavaz.dev</span>
     </footer>
-    <script is:inline define:vars={{ email: site.email }}>
+    <script is:inline define:vars={{ email: site.email, clockLocale: t.clock }}>
       async function copyEmail() {
         try {
           await navigator.clipboard.writeText(email);
@@ -53,7 +67,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
       });
 
       const clock = document.querySelector('[data-clock]');
-      const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul', hour: 'numeric', minute: '2-digit' });
+      const fmt = new Intl.DateTimeFormat(clockLocale, { timeZone: 'Europe/Istanbul', hour: 'numeric', minute: '2-digit' });
       const tick = () => { clock.textContent = fmt.format(new Date()).toLowerCase(); };
       tick();
       setInterval(tick, 1000);
