@@ -12,7 +12,7 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 body { margin: 0; }
-.col { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+.col { max-width: 632px; margin: 0 auto; padding: 0 16px; }
 main.col { padding-top: 72px; }
 a { color: inherit; text-decoration-color: var(--line); text-underline-offset: 3px; }
 a:hover { text-decoration-color: currentColor; }

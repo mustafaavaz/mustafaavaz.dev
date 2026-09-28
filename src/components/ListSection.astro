@@ -1,0 +1,28 @@
+---
+interface Row { year: string; title: string; href?: string; date: string }
+interface Props { title: string; rows: Row[] }
+const { title, rows } = Astro.props;
+---
+{rows.length > 0 && (
+  <section class="section">
+    <h2>{title}</h2>
+    <ul>
+      {rows.map((r, i) => (
+        <li>
+          <span class="yr">{i === 0 || rows[i - 1].year !== r.year ? r.year : ''}</span>
+          {r.href ? <a href={r.href}>{r.title}</a> : <span>{r.title}</span>}
+          <span class="dt">{r.date}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  ul { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  li { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  li:last-child { border-bottom: 0; }
+  a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .yr, .dt { color: var(--faint); font-variant-numeric: tabular-nums; }
+</style>

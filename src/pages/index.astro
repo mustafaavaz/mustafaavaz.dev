@@ -1,5 +1,64 @@
 ---
+import { existsSync } from 'node:fs';
 import Base from '../layouts/Base.astro';
+import ListSection from '../components/ListSection.astro';
 import Heatmap from '../components/Heatmap.astro';
+import { getPosts } from '../lib/posts';
+import { site } from '../site.mjs';
+
+type Row = { year: string; title: string; href?: string; date: string };
+
+const experience: Row[] = [
+  { year: '2026', title: 'Fex — Software Engineering Intern', date: 'Jun –' },
+];
+const projects: Row[] = [];
+
+const writing: Row[] = (await getPosts()).map((p) => ({
+  year: String(p.data.date.getUTCFullYear()),
+  title: p.data.title,
+  href: `/writing/${p.id}/`,
+  date: p.data.date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }),
+}));
+
+const hasCv = existsSync('public/cv.pdf');
 ---
-<Base><section class="section"><h2>Activity</h2><Heatmap /></section></Base>
+<Base>
+  <header class="top">
+    <span class="avatar">
+      <img src="/me.jpg" alt="" width="44" height="44" />
+      <span class="dot" aria-hidden="true"></span>
+    </span>
+    <div>
+      <h1>{site.name}</h1>
+      <p class="sub">Updated {site.updated}</p>
+    </div>
+  </header>
+
+  <p>I'm a <b>software engineer</b> from Istanbul working on <b>backend systems for trading</b> — matching engines, price feeds and the plumbing between them.</p>
+  <p>Currently an intern at <b>Fex</b>.</p>
+
+  <p>
+    Find me on <a class="chip" href={site.github}>GitHub</a>{site.linkedin && <>, <a class="chip" href={site.linkedin}>LinkedIn</a></>}
+    {hasCv && <> · <a class="chip" href="/cv.pdf">CV ↓</a></>}
+  </p>
+  <p class="copy-hint">Press <button class="kbd" type="button" data-copy-email aria-label="Copy email address">C</button> to copy my email</p>
+
+  <ListSection title="Experience" rows={experience} />
+  <ListSection title="Projects" rows={projects} />
+  <ListSection title="Writing" rows={writing} />
+
+  <section class="section">
+    <h2>Activity</h2>
+    <Heatmap />
+  </section>
+</Base>
+
+<style>
+  .top { display: flex; align-items: center; gap: 12px; }
+  .avatar { position: relative; flex-shrink: 0; }
+  .avatar img { display: block; width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--chip); }
+  .dot { position: absolute; right: -3px; bottom: -3px; width: 11px; height: 11px; border-radius: 50%; background: #3fb96b; border: 2px solid var(--bg); }
+  h1 { font-size: 15px; }
+  .sub { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .top + p { margin-top: 20px; }
+</style>
