@@ -91,9 +91,9 @@ const person = {
       <p class="sub">{t.updated} {updated}</p>
     </div>
     <nav class="lang" aria-label="Language">
-      {lang === 'tr' ? <b aria-current="page">TR</b> : <a href="/tr/" hreflang="tr" lang="tr">TR</a>}
-      <span aria-hidden="true">|</span>
       {lang === 'en' ? <b aria-current="page">EN</b> : <a href="/" hreflang="en" lang="en">EN</a>}
+      <span aria-hidden="true">|</span>
+      {lang === 'tr' ? <b aria-current="page">TR</b> : <a href="/tr/" hreflang="tr" lang="tr">TR</a>}
     </nav>
   </header>
 
