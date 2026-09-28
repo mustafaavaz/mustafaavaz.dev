@@ -9,10 +9,12 @@ export function levels(counts) {
   return (c) => (c <= 0 ? 0 : c <= q(0.25) ? 1 : c <= q(0.5) ? 2 : c <= q(0.75) ? 3 : 4);
 }
 
-// 53 week columns (Sunday-first) ending on `today`.
+const WEEKS_BACK = 26; // ~6 months
+
+// WEEKS_BACK + 1 week columns (Sunday-first) ending on `today`.
 export function buildGrid(days, today) {
   const end = toTime(today);
-  const start = end - (52 * 7 + new Date(end).getUTCDay()) * DAY;
+  const start = end - (WEEKS_BACK * 7 + new Date(end).getUTCDay()) * DAY;
   const all = [];
   for (let t = start; t <= end; t += DAY) all.push({ date: toDate(t), count: days[toDate(t)] ?? 0 });
 
