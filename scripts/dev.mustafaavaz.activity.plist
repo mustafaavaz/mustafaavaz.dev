@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>dev.mustafaavaz.activity</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>/Users/mustafaavaz/Desktop/mustafaavaz.dev/scripts/update-activity.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>/Users/mustafaavaz/.nvm/versions/node/v22.23.1/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StartCalendarInterval</key>
+  <dict><key>Hour</key><integer>21</integer><key>Minute</key><integer>0</integer></dict>
+  <key>StandardOutPath</key><string>/Users/mustafaavaz/Library/Logs/mustafaavaz-activity.log</string>
+  <key>StandardErrorPath</key><string>/Users/mustafaavaz/Library/Logs/mustafaavaz-activity.log</string>
+</dict>
+</plist>
