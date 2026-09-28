@@ -28,5 +28,31 @@ const canonical = new URL(Astro.url.pathname, site.url);
       <span><span class="live" aria-hidden="true">●</span> <span data-clock></span> in Istanbul</span>
       <span>mustafaavaz.dev</span>
     </footer>
+    <script is:inline define:vars={{ email: site.email }}>
+      async function copyEmail() {
+        try {
+          await navigator.clipboard.writeText(email);
+        } catch {
+          location.href = `mailto:${email}`;
+          return;
+        }
+        document.querySelectorAll('.copy-hint').forEach((el) => {
+          el.classList.add('done');
+          setTimeout(() => el.classList.remove('done'), 1500);
+        });
+      }
+      document.querySelectorAll('[data-copy-email]').forEach((b) => b.addEventListener('click', copyEmail));
+      addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() !== 'c' || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+        if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+        copyEmail();
+      });
+
+      const clock = document.querySelector('[data-clock]');
+      const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul', hour: 'numeric', minute: '2-digit' });
+      const tick = () => { clock.textContent = fmt.format(new Date()).toLowerCase(); };
+      tick();
+      setInterval(tick, 1000);
+    </script>
   </body>
 </html>
