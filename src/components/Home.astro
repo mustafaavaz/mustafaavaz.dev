@@ -24,6 +24,7 @@ const t = {
     find: 'Find me on',
     and: ',',
     press: ['Press', 'to copy my email'],
+    tap: 'Tap to copy my email',
     copyLabel: 'Copy email address',
     sections: { experience: 'Experience', projects: 'Projects', writing: 'Writing', activity: 'Activity' },
     experience: [
@@ -44,6 +45,7 @@ const t = {
     and: ' ve',
     findEnd: "'de bulabilirsin.",
     press: ['E-postamı kopyalamak için', "'ye bas"],
+    tap: 'E-postamı kopyalamak için dokun',
     copyLabel: 'E-posta adresini kopyala',
     sections: { experience: 'Deneyim', projects: 'Projeler', writing: 'Yazılar', activity: 'Aktivite' },
     experience: [
@@ -103,7 +105,10 @@ const person = {
     {t.find} <a class="chip" rel="me" href={site.github}>GitHub</a>{site.linkedin && <>{t.and} <a class="chip" rel="me" href={site.linkedin}>LinkedIn</a></>}{'findEnd' in t && t.findEnd}
     {hasCv && <> · <a class="chip" href="/cv.pdf">CV ↓</a></>}
   </p>
-  <p class="copy-hint">{t.press[0]} <button class="kbd" type="button" data-copy-email aria-label={t.copyLabel}>C</button>{t.press[1].startsWith("'") ? t.press[1] : ` ${t.press[1]}`}</p>
+  <p class="copy-hint">
+    <span class="copy-key">{t.press[0]} <button class="kbd" type="button" data-copy-email aria-label={t.copyLabel}>C</button>{t.press[1].startsWith("'") ? t.press[1] : ` ${t.press[1]}`}</span>
+    <button class="copy-touch chip" type="button" data-copy-email>{t.tap}</button>
+  </p>
 
   <ListSection title={t.sections.experience} rows={t.experience} />
   <ListSection title={t.sections.projects} rows={projects} />

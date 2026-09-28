@@ -22,7 +22,10 @@ const date = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month:
   </article>
   <nav class="end">
     <a href="/" data-home>← Back home</a>
-    <span class="copy-hint">Press <button class="kbd" type="button" data-copy-email aria-label="Copy email address">C</button> to copy my email</span>
+    <span class="copy-hint">
+      <span class="copy-key">Press <button class="kbd" type="button" data-copy-email aria-label="Copy email address">C</button> to copy my email</span>
+      <button class="copy-touch chip" type="button" data-copy-email>Tap to copy my email</button>
+    </span>
   </nav>
   <script is:inline>
     // Send "home" back to the Turkish page when the reader came from it.
