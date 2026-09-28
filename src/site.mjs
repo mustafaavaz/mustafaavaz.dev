@@ -5,5 +5,5 @@ export const site = {
   github: 'https://github.com/mustafaavaz',
   linkedin: 'https://www.linkedin.com/in/mustafaavaz/',
   updated: 'Sep 2026',
-  description: 'Mustafa Avaz — software engineer from Istanbul working on backend and AI systems for fintech.',
+  description: 'Mustafa Avaz — software engineer from Istanbul building backend and AI systems for crypto and fintech.',
 };

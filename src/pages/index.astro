@@ -9,7 +9,7 @@ import { site } from '../site.mjs';
 type Row = { year: string; title: string; href?: string; date: string };
 
 const experience: Row[] = [
-  { year: '2026', title: 'Fex — Software Engineering Intern', date: 'Jun –' },
+  { year: '2026', title: 'Fexobit — Software Engineering Intern', date: 'Jun –' },
   { year: '2025', title: 'ForInvest — Backend Developer Intern', date: 'Feb – Jun' },
 ];
 const projects: Row[] = [];
@@ -40,7 +40,7 @@ const person = {
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(person)} />
   <header class="top">
     <span class="avatar">
-      <img src="/me.jpg" alt={site.name} width="44" height="44" />
+      <img src="/me.jpg" alt={site.name} width="64" height="64" />
       <span class="dot" aria-hidden="true"></span>
     </span>
     <div>
@@ -49,8 +49,8 @@ const person = {
     </div>
   </header>
 
-  <p>I'm a <b>software engineer</b> from Istanbul working on <b>backend and AI systems for fintech</b>.</p>
-  <p>Currently an intern at <b>Fex</b>, where I've built a <b>RAG</b> system over code and docs and worked on a <b>matching engine</b>.</p>
+  <p>I'm a <b>software engineer</b> from Istanbul building <b>backend and AI systems for crypto and fintech</b>.</p>
+  <p>Currently an intern at <b>Fexobit</b>, where I work on <b>trading engines</b> and <b>price oracles</b>, and build <b>AI systems</b> and <b>agentic tools</b> alongside them.</p>
 
   <p>
     Find me on <a class="chip" rel="me" href={site.github}>GitHub</a>{site.linkedin && <>, <a class="chip" rel="me" href={site.linkedin}>LinkedIn</a></>}
@@ -69,10 +69,10 @@ const person = {
 </Base>
 
 <style>
-  .top { display: flex; align-items: center; gap: 12px; }
+  .top { display: flex; align-items: center; gap: 14px; }
   .avatar { position: relative; flex-shrink: 0; }
-  .avatar img { display: block; width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--chip); }
-  .dot { position: absolute; right: -3px; bottom: -3px; width: 11px; height: 11px; border-radius: 50%; background: #3fb96b; border: 2px solid var(--bg); }
+  .avatar img { display: block; width: 64px; height: 64px; border-radius: 14px; object-fit: cover; background: var(--chip); }
+  .dot { position: absolute; right: -3px; bottom: -3px; width: 13px; height: 13px; border-radius: 50%; background: #3fb96b; border: 2px solid var(--bg); }
   h1 { font-size: 15px; }
   .sub { margin: 0; color: var(--muted); font-size: 13.5px; }
   .top + p { margin-top: 20px; }
