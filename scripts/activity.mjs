@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const EMAILS = ['avazedu@gmail.com'];
-const GITHUB_USER = 'mustafavaz';
+const GITHUB_USER = 'mustafaavaz';
 const ROOTS = [join(homedir(), 'Desktop')];
 const MAX_DEPTH = 3;
 const WINDOW_DAYS = 371;
