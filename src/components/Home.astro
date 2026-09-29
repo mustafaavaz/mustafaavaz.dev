@@ -14,7 +14,7 @@ type Row = { year: string; title: string; href?: string; date: string };
 // Bio paragraphs are trusted, hand-written HTML (only <b> tags).
 const t = {
   en: {
-    title: `${site.name} — Software Engineer`,
+    title: site.name,
     description: site.description,
     updated: 'Updated',
     bio: [
@@ -29,12 +29,12 @@ const t = {
     sections: { experience: 'Experience', projects: 'Projects', writing: 'Writing', activity: 'Activity' },
     experience: [
       { year: '2026', title: 'Fexobit — Software Engineering Intern', date: 'Jun –' },
-      { year: '2025', title: 'ForInvest — Backend Developer Intern', date: 'Feb – Jun' },
+      { year: '2025', title: 'ForInvest — Software Engineering Intern', date: 'Feb – Jun' },
     ],
     jobTitle: 'Software Engineer',
   },
   tr: {
-    title: `${site.name} — Yazılım Mühendisi`,
+    title: site.name,
     description: "İstanbul'da kripto ve fintech alanında backend ve yapay zeka sistemleri geliştiren yazılım mühendisi. Şu anda Fexobit'te.",
     updated: 'Güncellendi:',
     bio: [
@@ -50,7 +50,7 @@ const t = {
     sections: { experience: 'Deneyim', projects: 'Projeler', writing: 'Yazılar', activity: 'Aktivite' },
     experience: [
       { year: '2026', title: 'Fexobit — Yazılım Mühendisliği Stajyeri', date: 'Haz –' },
-      { year: '2025', title: 'ForInvest — Backend Geliştirici Stajyeri', date: 'Şub – Haz' },
+      { year: '2025', title: 'ForInvest — Yazılım Mühendisliği Stajyeri', date: 'Şub – Haz' },
     ],
     jobTitle: 'Yazılım Mühendisi',
   },

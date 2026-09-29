@@ -7,4 +7,5 @@ export async function getPosts(): Promise<Post[]> {
   return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
-export const readingTime = (body = '') => Math.max(1, Math.ceil(body.trim().split(/\s+/).length / 200));
+// Tags (inline SVG diagrams, figures) are markup, not words to read.
+export const readingTime = (body = '') => Math.max(1, Math.ceil(body.replace(/<[^>]*>/g, ' ').trim().split(/\s+/).length / 200));

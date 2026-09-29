@@ -52,6 +52,20 @@ const date = post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month:
     background: var(--code) !important; border: 1px solid var(--line); border-radius: 8px;
     padding: 14px 16px; margin: 0 0 16px; overflow-x: auto; line-height: 1.6;
   }
+  .prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; margin: 0 0 16px; font-size: 14px; }
+  .prose :global(th), .prose :global(td) { padding: 6px 14px 6px 0; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  .prose :global(th) { font-weight: 600; color: var(--muted); }
+  .prose :global(figure) { margin: 24px 0; }
+  .prose :global(figure svg) { display: block; width: 100%; max-width: 440px; height: auto; margin: 0 auto; }
+  .prose :global(figcaption) { margin-top: 8px; font-size: 13px; color: var(--muted); text-align: center; }
+  /* Inline SVG diagrams in posts draw with the site's tokens. */
+  .prose :global(.bx) { fill: var(--chip); stroke: var(--line); }
+  .prose :global(.bx-hi) { fill: #e6ebf8; stroke: var(--blue); }
+  .prose :global(.ar) { stroke: var(--faint); fill: none; stroke-width: 1.5; }
+  .prose :global(.t) { fill: var(--ink); font-size: 13px; font-weight: 500; }
+  .prose :global(.ts) { fill: var(--muted); font-size: 11.5px; }
+  .prose :global(.b0) { fill: #d8d2c5; }
+  .prose :global(.b1) { fill: var(--blue); }
   .end {
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
     margin-top: 32px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
